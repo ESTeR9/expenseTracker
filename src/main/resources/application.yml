@@ -1,0 +1,12 @@
+server.port: 4040
+
+app:
+  supported-expense-types:
+    - food
+    - rent
+    - clothing
+    - travel
+    - gadgets
+    - communication
+    - family
+    - other
