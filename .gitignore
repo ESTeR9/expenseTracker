@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+## Private
+/src/main/resources/fireBaseServiceAccountKey.json
+
+##gitignore
+.gitignore
