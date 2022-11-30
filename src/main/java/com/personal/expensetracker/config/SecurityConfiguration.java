@@ -1,16 +1,14 @@
 package com.personal.expensetracker.config;
 
+import com.personal.expensetracker.dao.CustomAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -25,17 +23,21 @@ public class SecurityConfiguration {
             .csrf()
             .disable()
             .authorizeRequests()
-            .antMatchers(HttpMethod.POST)
-            .hasRole("ADMIN")
-            .antMatchers("/api/v1/user")
-            .anonymous()
-            .anyRequest()
-            .authenticated()
+//            .antMatchers("/**")
+//            .hasRole("ADMIN")
+            .antMatchers("/user/register")
+            .hasRole("USER")
+            .antMatchers("/user/login")
+            .permitAll()
+//            .anyRequest()
+//            .authenticated()
             .and()
-            .httpBasic()
-            .and()
-            .sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            .httpBasic(Customizer.withDefaults())
+            .authenticationProvider(new CustomAuthenticationProvider());
+//            .and()
+//            .sessionManagement()
+//            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+//            .formLogin();
         return http.build();
     }
 

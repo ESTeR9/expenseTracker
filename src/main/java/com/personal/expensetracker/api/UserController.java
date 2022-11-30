@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutionException;
 
 import static java.util.Objects.isNull;
 
-@RequestMapping("api/v1/user")
+@RequestMapping("/user")
 @RestController
 public class UserController {
 
@@ -24,7 +24,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public void addUser(@Valid @NotNull @RequestBody User user) throws ExecutionException, InterruptedException {
         userService.addUser(user);
     }

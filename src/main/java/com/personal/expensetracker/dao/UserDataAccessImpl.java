@@ -16,7 +16,7 @@ public class UserDataAccessImpl implements UserDao{
 
     private static List<User> DB = new ArrayList<>();
 
-    static Firestore DB_FS = FirestoreClient.getFirestore();
+    private static Firestore DB_FS = FirestoreClient.getFirestore();
 
     @Override
     public String insertUser(String id, User user) throws ExecutionException, InterruptedException {
@@ -27,7 +27,7 @@ public class UserDataAccessImpl implements UserDao{
         ApiFuture<WriteResult> collectionsApiFuture = DB_FS.collection("users").document(id).set(user);
 
         //TO-DO: instead of path being username_password, make it user_id
-        DB_FS.collection("expenseReports").document(user.getName()+"_"+user.getPassword())
+        DB_FS.collection("expenseReports").document(id)
                 .set(new ExpenseReportPojo(month));
 
         DB.add(new User(id,user.getName()));

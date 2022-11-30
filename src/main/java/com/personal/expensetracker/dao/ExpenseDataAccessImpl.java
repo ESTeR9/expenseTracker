@@ -1,5 +1,7 @@
 package com.personal.expensetracker.dao;
 
+import com.google.cloud.firestore.Firestore;
+import com.google.firebase.cloud.FirestoreClient;
 import com.personal.expensetracker.model.User;
 import com.google.cloud.firestore.DocumentReference;
 import org.springframework.stereotype.Repository;
@@ -13,10 +15,12 @@ import static java.util.Objects.nonNull;
 @Repository("expenseReportDai")
 public class ExpenseDataAccessImpl implements ExpenseDao{
 
+    private static Firestore DB_FS = FirestoreClient.getFirestore();
+
     @Override
     public String insertExpense(User user, String month, String expenseType, Double expenseAmount) throws ExecutionException,
             InterruptedException {
-        DocumentReference expenseReportDocumentReference= UserDataAccessImpl.DB_FS.collection("expenseReports")
+        DocumentReference expenseReportDocumentReference= DB_FS.collection("expenseReports")
                 .document(user.getName()+"_"+user.getPassword()).get().get().getReference();
         Map<String,Object> expenseReportsData= expenseReportDocumentReference.get().get().getData();
         Map<String, Map<String, Double>> expenseReportsMap = ((Map<String, Map<String, Double>>) expenseReportsData.get("reports"));
@@ -45,7 +49,7 @@ public class ExpenseDataAccessImpl implements ExpenseDao{
 
     @Override
     public Map<String, Double> selectExpenseReportByUsernameAndMonth(User user, String month) throws ExecutionException, InterruptedException {
-        return ((Map<String,Map<String,Double>>) UserDataAccessImpl.DB_FS.collection("expenseReports").document(user.getName()+"_"+user.getPassword()).get()
+        return ((Map<String,Map<String,Double>>) DB_FS.collection("expenseReports").document(user.getName()+"_"+user.getPassword()).get()
                 .get().getReference().get().get().getData().get("reports")).get(month);
     }
 }
