@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.concurrent.ExecutionException;
 
-@RequestMapping("api/v1/expense")
+@RequestMapping("/expense")
 @RestController
 public class ExpenseController {
     private final ExpenseService expenseService;
@@ -33,7 +33,7 @@ public class ExpenseController {
                                                                @RequestParam(name = "password") String password,
                                                                @RequestParam(name = "month") String month)
                                                     throws ExecutionException, InterruptedException {
-        return this.expenseService.selectExpenseReportByUsernameAndMonth(new User(password,username), month);
+        return this.expenseService.selectExpenseReportByUsernameAndMonth(username, month);
     }
 
 //    @GetMapping(path = "expenseTrends")

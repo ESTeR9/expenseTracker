@@ -18,26 +18,18 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfiguration {
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf()
             .disable()
             .authorizeRequests()
-//            .antMatchers("/**")
-//            .hasRole("ADMIN")
-            .antMatchers("/user/register")
+            .antMatchers("/user/expense/**")
             .hasRole("USER")
-            .antMatchers("/user/login")
+            .antMatchers("/user/register")
             .permitAll()
-//            .anyRequest()
-//            .authenticated()
             .and()
             .httpBasic(Customizer.withDefaults())
             .authenticationProvider(new CustomAuthenticationProvider());
-//            .and()
-//            .sessionManagement()
-//            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-//            .formLogin();
         return http.build();
     }
 

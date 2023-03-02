@@ -1,10 +1,12 @@
 package com.personal.expensetracker.dao;
 
+import com.personal.expensetracker.exceptions.UserNameAlreadyExistsException;
 import com.personal.expensetracker.model.ExpenseReportPojo;
 import com.personal.expensetracker.model.User;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -19,18 +21,21 @@ public class UserDataAccessImpl implements UserDao{
     private static Firestore DB_FS = FirestoreClient.getFirestore();
 
     @Override
-    public String insertUser(String id, User user) throws ExecutionException, InterruptedException {
+    public String insertUser(User user) throws ExecutionException, InterruptedException, UserNameAlreadyExistsException {
         Map<String, String> userDetails = new HashMap<>();
         userDetails.put("password",user.getPassword());
         userDetails.put("name",user.getName());
         String month = LocalDate.now().getMonth().toString().toLowerCase() + LocalDate.now().getYear();
-        ApiFuture<WriteResult> collectionsApiFuture = DB_FS.collection("users").document(id).set(user);
+        Query queryByUserName = DB_FS.collection("users").whereEqualTo("name",user.getName());
+        if(queryByUserName.get().get().getDocuments().size()>0)
+            throw new UserNameAlreadyExistsException();
+        ApiFuture<WriteResult> collectionsApiFuture = DB_FS.collection("users").document(user.getName()).set(user);
 
         //TO-DO: instead of path being username_password, make it user_id
-        DB_FS.collection("expenseReports").document(id)
+        DB_FS.collection("expenseReports").document(user.getName())
                 .set(new ExpenseReportPojo(month));
 
-        DB.add(new User(id,user.getName()));
+        DB.add(user);
         return collectionsApiFuture.get().getUpdateTime().toString();
     }
 

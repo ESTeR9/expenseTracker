@@ -15,13 +15,13 @@ import static java.util.Objects.nonNull;
 @Repository("expenseReportDai")
 public class ExpenseDataAccessImpl implements ExpenseDao{
 
-    private static Firestore DB_FS = FirestoreClient.getFirestore();
+    private static final Firestore DB_FS = FirestoreClient.getFirestore();
 
     @Override
-    public String insertExpense(User user, String month, String expenseType, Double expenseAmount) throws ExecutionException,
+    public String insertExpense(String username, String month, String expenseType, Double expenseAmount) throws ExecutionException,
             InterruptedException {
         DocumentReference expenseReportDocumentReference= DB_FS.collection("expenseReports")
-                .document(user.getName()+"_"+user.getPassword()).get().get().getReference();
+                .document(username).get().get().getReference();
         Map<String,Object> expenseReportsData= expenseReportDocumentReference.get().get().getData();
         Map<String, Map<String, Double>> expenseReportsMap = ((Map<String, Map<String, Double>>) expenseReportsData.get("reports"));
         Map<String, Double> expenseReportMap = expenseReportsMap.get(month);
@@ -48,8 +48,13 @@ public class ExpenseDataAccessImpl implements ExpenseDao{
     }
 
     @Override
-    public Map<String, Double> selectExpenseReportByUsernameAndMonth(User user, String month) throws ExecutionException, InterruptedException {
-        return ((Map<String,Map<String,Double>>) DB_FS.collection("expenseReports").document(user.getName()+"_"+user.getPassword()).get()
-                .get().getReference().get().get().getData().get("reports")).get(month);
+    public Map<String, Double> selectExpenseReportByUsernameAndMonth(String username, String month){
+        try{
+            return ((Map<String,Map<String,Double>>) DB_FS.collection("expenseReports").document(username).get()
+                    .get().getReference().get().get().getData().get("reports")).get(month);
+        }
+        catch (Exception e) {
+            return null;
+        }
     }
 }

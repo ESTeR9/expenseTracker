@@ -1,9 +1,11 @@
 package com.personal.expensetracker.service;
 
 import com.personal.expensetracker.dao.UserDao;
+import com.personal.expensetracker.exceptions.UserNameAlreadyExistsException;
 import com.personal.expensetracker.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +21,7 @@ public class UserService {
         this.userDao =userDao;
     }
 
-    public String addUser(User user) throws ExecutionException, InterruptedException {
+    public String addUser(User user) throws ExecutionException, InterruptedException, UserNameAlreadyExistsException {
         return userDao.insertUser(user);
     }
 

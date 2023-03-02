@@ -1,6 +1,8 @@
 package com.personal.expensetracker.dao;
 
+import com.personal.expensetracker.exceptions.UserNameAlreadyExistsException;
 import com.personal.expensetracker.model.User;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,12 +10,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 public interface UserDao {
-    String insertUser(String id, User user) throws ExecutionException, InterruptedException;
-
-    default String insertUser(User user) throws ExecutionException, InterruptedException {
-        String id = UUID.randomUUID().toString();
-        return insertUser(id,user);
-    }
+    String insertUser(User user) throws ExecutionException, InterruptedException, UserNameAlreadyExistsException;
 
     List<User> selectAllUsers();
 

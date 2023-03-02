@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 public class Expense implements Serializable {
-    private final User user;
+    private final String username;
 
     private final String month;
 
@@ -19,10 +19,10 @@ public class Expense implements Serializable {
 
     private final Double expenseAmount;
 
-    public Expense(@JsonProperty("user") User user,@JsonProperty("month") String month, @JsonProperty("expenseType") String expenseType,
+    public Expense(@JsonProperty("username") String username,@JsonProperty("month") String month, @JsonProperty("expenseType") String expenseType,
                    @JsonProperty("expenseAmount") Double expenseAmount)
     {
-        this.user=user;
+        this.username=username;
         this.month = month;
         this.expenseType = expenseType;
         this.expenseAmount = expenseAmount;

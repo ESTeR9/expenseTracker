@@ -19,7 +19,7 @@ import static java.util.Objects.nonNull;
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
 
-    private static Firestore DB_FS = FirestoreClient.getFirestore();
+    private static final Firestore DB_FS = FirestoreClient.getFirestore();
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
@@ -27,10 +27,9 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         String password = authentication.getCredentials().toString();
         UserDetails userDetails = isValidUser(username,password);
         if (nonNull(userDetails)) {
-            authentication.setAuthenticated(true);
             return new UsernamePasswordAuthenticationToken(username, password, userDetails.getAuthorities());
         }
-        return null;
+        return authentication;
     }
 
     @Override
@@ -55,7 +54,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
             }
             return null;
         }
-        catch (ExecutionException | InterruptedException e){
+        catch (ExecutionException | InterruptedException | IndexOutOfBoundsException e){
             return null;
         }
     }
