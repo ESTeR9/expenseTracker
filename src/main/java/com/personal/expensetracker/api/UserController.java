@@ -1,8 +1,14 @@
 package com.personal.expensetracker.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.personal.expensetracker.exceptions.IncorrectPasswordException;
 import com.personal.expensetracker.exceptions.UserNameAlreadyExistsException;
-import com.personal.expensetracker.model.*;
+import com.personal.expensetracker.exceptions.UserNotRegisteredException;
+import com.personal.expensetracker.model.User;
+import com.personal.expensetracker.model.ExpenseReportRequestBody;
+import com.personal.expensetracker.model.Expense;
+import com.personal.expensetracker.model.ExpenseTrend;
+import com.personal.expensetracker.model.ExpenseReport;
 import com.personal.expensetracker.service.ExpenseService;
 import com.personal.expensetracker.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +66,10 @@ public class UserController {
         return this.expenseService.getMonthlyExpenseTrend(username);
     }
 
+    @PostMapping(path="/login")
+    public Boolean login(@Valid @NotNull @RequestBody User user) throws IncorrectPasswordException, UserNotRegisteredException, ExecutionException, InterruptedException {
+        return userService.login(user);
+    }
 //    @GetMapping
 //    public List<User> getUsers(@RequestParam(required = false, name = "id") String id){
 //        if(isNull(id)){

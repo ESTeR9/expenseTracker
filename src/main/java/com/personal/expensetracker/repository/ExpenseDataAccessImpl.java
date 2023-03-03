@@ -1,8 +1,7 @@
-package com.personal.expensetracker.dao;
+package com.personal.expensetracker.repository;
 
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
-import com.personal.expensetracker.model.User;
 import com.google.cloud.firestore.DocumentReference;
 import org.springframework.stereotype.Repository;
 

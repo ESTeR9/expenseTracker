@@ -1,6 +1,4 @@
-package com.personal.expensetracker.dao;
-
-import com.personal.expensetracker.model.User;
+package com.personal.expensetracker.repository;
 
 import java.util.Map;
 import java.util.concurrent.ExecutionException;

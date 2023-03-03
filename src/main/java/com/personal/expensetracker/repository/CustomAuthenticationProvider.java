@@ -1,4 +1,4 @@
-package com.personal.expensetracker.dao;
+package com.personal.expensetracker.repository;
 
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;

@@ -1,6 +1,6 @@
 package com.personal.expensetracker.service;
 
-import com.personal.expensetracker.dao.ExpenseDao;
+import com.personal.expensetracker.repository.ExpenseDao;
 import com.personal.expensetracker.model.Expense;
 import com.personal.expensetracker.model.ExpenseReport;
 import com.personal.expensetracker.model.ExpenseTrend;

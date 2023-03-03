@@ -1,6 +1,6 @@
 package com.personal.expensetracker.config;
 
-import com.personal.expensetracker.dao.CustomAuthenticationProvider;
+import com.personal.expensetracker.repository.CustomAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;

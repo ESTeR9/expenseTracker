@@ -1,29 +1,33 @@
-package com.personal.expensetracker.dao;
+package com.personal.expensetracker.repository;
 
+import com.personal.expensetracker.exceptions.IncorrectPasswordException;
 import com.personal.expensetracker.exceptions.UserNameAlreadyExistsException;
+import com.personal.expensetracker.exceptions.UserNotRegisteredException;
 import com.personal.expensetracker.model.ExpenseReportPojo;
 import com.personal.expensetracker.model.User;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.time.LocalDate;
 
-@Repository("userDai")
-public class UserDataAccessImpl implements UserDao{
+@Repository("userRepositoryImpl")
+public class UserRepositoryImpl implements UserRepository {
 
     private static List<User> DB = new ArrayList<>();
 
     private static Firestore DB_FS = FirestoreClient.getFirestore();
 
+    private static final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     @Override
     public String insertUser(User user) throws ExecutionException, InterruptedException, UserNameAlreadyExistsException {
         Map<String, String> userDetails = new HashMap<>();
-        userDetails.put("password",user.getPassword());
+        userDetails.put("password",passwordEncoder.encode(user.getPassword()));
         userDetails.put("name",user.getName());
         String month = LocalDate.now().getMonth().toString().toLowerCase() + LocalDate.now().getYear();
         Query queryByUserName = DB_FS.collection("users").whereEqualTo("name",user.getName());
@@ -37,6 +41,17 @@ public class UserDataAccessImpl implements UserDao{
 
         DB.add(user);
         return collectionsApiFuture.get().getUpdateTime().toString();
+    }
+
+    @Override
+    public Boolean login(User user) throws UserNotRegisteredException, ExecutionException, InterruptedException, IncorrectPasswordException {
+        Query queryByUserName = DB_FS.collection("users").whereEqualTo("name",user.getName());
+        if(queryByUserName.get().get().getDocuments().size()==0)
+            throw new UserNotRegisteredException();
+        Map<String, Object> userDetails = queryByUserName.get().get().getDocuments().get(0).getData();
+        if(passwordEncoder.matches(user.getPassword(), (String) userDetails.get("password")))
+            return true;
+        throw new IncorrectPasswordException();
     }
 
     @Override
