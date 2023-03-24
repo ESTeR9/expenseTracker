@@ -26,14 +26,13 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public String insertUser(User user) throws ExecutionException, InterruptedException, UserNameAlreadyExistsException {
-        Map<String, String> userDetails = new HashMap<>();
-        userDetails.put("password",passwordEncoder.encode(user.getPassword()));
-        userDetails.put("name",user.getName());
         String month = LocalDate.now().getMonth().toString().toLowerCase() + LocalDate.now().getYear();
         Query queryByUserName = DB_FS.collection("users").whereEqualTo("name",user.getName());
         if(queryByUserName.get().get().getDocuments().size()>0)
             throw new UserNameAlreadyExistsException();
-        ApiFuture<WriteResult> collectionsApiFuture = DB_FS.collection("users").document(user.getName()).set(user);
+
+        ApiFuture<WriteResult> collectionsApiFuture = DB_FS.collection("users").document(user.getName()).
+                set(new User(passwordEncoder.encode(user.getPassword()),user.getName()));
 
         //TO-DO: instead of path being username_password, make it user_id
         DB_FS.collection("expenseReports").document(user.getName())
